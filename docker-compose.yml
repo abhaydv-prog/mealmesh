@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: mealmesh-db
+    restart: always
+    environment:
+      POSTGRES_DB: mealmesh
+      POSTGRES_USER: mealmesh_user
+      POSTGRES_PASSWORD: mealmesh_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - mealmesh_pgdata:/var/lib/postgresql/data
+
+volumes:
+  mealmesh_pgdata:
