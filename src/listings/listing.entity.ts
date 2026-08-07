@@ -1,0 +1,46 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
+
+export enum ListingStatus {
+  AVAILABLE = 'AVAILABLE',
+  CLAIMED = 'CLAIMED',
+  COMPLETED = 'COMPLETED',
+  EXPIRED = 'EXPIRED',
+}
+
+@Entity('listings')
+export class Listing {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
+  @Column()
+  title!: string;
+
+  @Column({ type: 'text' })
+  description!: string;
+
+  @Column()
+  quantity!: string;
+
+  @Column({
+    type: 'geography',
+    spatialFeatureType: 'Point',
+    srid: 4326,
+    nullable: true,
+  })
+  location!: string;
+
+  @Column({
+    type: 'enum',
+    enum: ListingStatus,
+    default: ListingStatus.AVAILABLE,
+  })
+  status!: ListingStatus;
+
+  @CreateDateColumn()
+  createdAt!: Date;
+}
