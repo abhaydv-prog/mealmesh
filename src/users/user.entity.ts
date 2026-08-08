@@ -3,7 +3,9 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Listing } from '../listings/listing.entity';
 
 export enum UserRole {
   DONOR = 'DONOR',
@@ -25,10 +27,7 @@ export class User {
   @Column()
   password!: string;
 
-  @Column({
-    type: 'enum',
-    enum: UserRole,
-  })
+  @Column({ type: 'enum', enum: UserRole })
   role!: UserRole;
 
   @Column({
@@ -38,6 +37,9 @@ export class User {
     nullable: true,
   })
   location!: string;
+
+  @OneToMany(() => Listing, (listing) => listing.donor)
+  listings!: Listing[];
 
   @CreateDateColumn()
   createdAt!: Date;

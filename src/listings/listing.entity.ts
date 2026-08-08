@@ -3,7 +3,9 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { User } from '../users/user.entity';
 
 export enum ListingStatus {
   AVAILABLE = 'AVAILABLE',
@@ -40,6 +42,9 @@ export class Listing {
     default: ListingStatus.AVAILABLE,
   })
   status!: ListingStatus;
+
+  @ManyToOne(() => User, (user) => user.listings)
+  donor!: User;
 
   @CreateDateColumn()
   createdAt!: Date;
