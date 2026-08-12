@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   OneToMany,
 } from 'typeorm';
+import { registerEnumType } from '@nestjs/graphql';
 import { Listing } from '../listings/listing.entity';
 
 export enum UserRole {
@@ -12,6 +13,8 @@ export enum UserRole {
   VOLUNTEER = 'VOLUNTEER',
   NGO = 'NGO',
 }
+
+registerEnumType(UserRole, { name: 'UserRole' });
 
 @Entity('users')
 export class User {

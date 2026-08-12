@@ -1,0 +1,42 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthResponse {
+  accessToken: String!
+  user: UserResponse!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  login(input: LoginInput!): AuthResponse!
+  register(input: RegisterInput!): AuthResponse!
+}
+
+type Query {
+  healthCheck: String!
+}
+
+input RegisterInput {
+  email: String!
+  name: String!
+  password: String!
+  role: UserRole!
+}
+
+type UserResponse {
+  email: String!
+  id: String!
+  name: String!
+  role: UserRole!
+}
+
+enum UserRole {
+  DONOR
+  NGO
+  VOLUNTEER
+}
