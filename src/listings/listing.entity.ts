@@ -6,6 +6,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { User } from '../users/user.entity';
+import { registerEnumType } from '@nestjs/graphql';
 
 export enum ListingStatus {
   AVAILABLE = 'AVAILABLE',
@@ -13,6 +14,8 @@ export enum ListingStatus {
   COMPLETED = 'COMPLETED',
   EXPIRED = 'EXPIRED',
 }
+
+registerEnumType(ListingStatus, { name: 'ListingStatus' });
 
 @Entity('listings')
 export class Listing {

@@ -7,18 +7,41 @@ type AuthResponse {
   user: UserResponse!
 }
 
+input CreateListingInput {
+  description: String!
+  quantity: String!
+  title: String!
+}
+
+enum ListingStatus {
+  AVAILABLE
+  CLAIMED
+  COMPLETED
+  EXPIRED
+}
+
+type ListingType {
+  description: String!
+  id: String!
+  quantity: String!
+  status: ListingStatus!
+  title: String!
+}
+
 input LoginInput {
   email: String!
   password: String!
 }
 
 type Mutation {
+  createListing(input: CreateListingInput!): ListingType!
   login(input: LoginInput!): AuthResponse!
   register(input: RegisterInput!): AuthResponse!
 }
 
 type Query {
   healthCheck: String!
+  listings: [ListingType!]!
 }
 
 input RegisterInput {
