@@ -6,10 +6,13 @@ import {
   ObjectType,
   Field,
 } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Listing, ListingStatus } from './listing.entity';
 import { CreateListingInput } from './dto/create-listing.input';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
 
 @ObjectType()
 class ListingType {
@@ -42,8 +45,15 @@ export class ListingsResolver {
   }
 
   @Mutation(() => ListingType)
-  async createListing(@Args('input') input: CreateListingInput) {
-    const listing = this.listingsRepository.create(input);
+  @UseGuards(JwtAuthGuard)
+  async createListing(
+    @Args('input') input: CreateListingInput,
+    @CurrentUser() currentUser: any,
+  ) {
+    const listing = this.listingsRepository.create({
+      ...input,
+      donor: { id: currentUser.userId },
+    });
     return this.listingsRepository.save(listing);
   }
 }
