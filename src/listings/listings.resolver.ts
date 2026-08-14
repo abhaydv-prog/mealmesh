@@ -5,6 +5,7 @@ import {
   Args,
   ObjectType,
   Field,
+  Float,
 } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -44,6 +45,27 @@ export class ListingsResolver {
     return this.listingsRepository.find();
   }
 
+  @Query(() => [ListingType])
+async nearbyListings(
+  @Args('latitude', { type: () => Float }) latitude: number,
+  @Args('longitude', { type: () => Float }) longitude: number,
+  @Args('radiusKm', { type: () => Float }) radiusKm: number,
+) {
+  const radiusMeters = radiusKm * 1000;
+
+  return this.listingsRepository
+    .createQueryBuilder('listing')
+    .where(
+      `ST_DWithin(
+        listing.location,
+        ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
+        :radiusMeters
+      )`,
+      { longitude, latitude, radiusMeters },
+    )
+    .getMany();
+}
+
   @Mutation(() => ListingType)
   @UseGuards(JwtAuthGuard)
   async createListing(
@@ -51,7 +73,13 @@ export class ListingsResolver {
     @CurrentUser() currentUser: any,
   ) {
     const listing = this.listingsRepository.create({
-      ...input,
+      title: input.title,
+      description: input.description,
+      quantity: input.quantity,
+      location: {
+        type: 'Point',
+        coordinates: [input.longitude, input.latitude],
+      } as any,
       donor: { id: currentUser.userId },
     });
     return this.listingsRepository.save(listing);

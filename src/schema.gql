@@ -9,6 +9,8 @@ type AuthResponse {
 
 input CreateListingInput {
   description: String!
+  latitude: Float!
+  longitude: Float!
   quantity: String!
   title: String!
 }
@@ -42,6 +44,7 @@ type Mutation {
 type Query {
   healthCheck: String!
   listings: [ListingType!]!
+  nearbyListings(latitude: Float!, longitude: Float!, radiusKm: Float!): [ListingType!]!
 }
 
 input RegisterInput {

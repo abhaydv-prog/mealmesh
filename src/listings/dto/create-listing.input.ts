@@ -1,4 +1,4 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field, Float } from '@nestjs/graphql';
 
 @InputType()
 export class CreateListingInput {
@@ -10,4 +10,10 @@ export class CreateListingInput {
 
   @Field()
   quantity!: string;
+
+  @Field(() => Float)
+  latitude!: number;
+
+  @Field(() => Float)
+  longitude!: number;
 }
