@@ -9,6 +9,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ListingsModule } from './listings/listings.module';
 import { AuthModule } from './auth/auth.module';
+import { PickupsModule } from './pickups/pickups.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     ListingsModule,
     AuthModule,
+    PickupsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -36,9 +36,23 @@ input LoginInput {
 }
 
 type Mutation {
+  acceptPickup(listingId: String!): PickupType!
   createListing(input: CreateListingInput!): ListingType!
   login(input: LoginInput!): AuthResponse!
   register(input: RegisterInput!): AuthResponse!
+  updatePickupStatus(pickupId: String!, status: PickupStatus!): PickupType!
+}
+
+enum PickupStatus {
+  ASSIGNED
+  CANCELLED
+  DELIVERED
+  IN_TRANSIT
+}
+
+type PickupType {
+  id: String!
+  status: PickupStatus!
 }
 
 type Query {
