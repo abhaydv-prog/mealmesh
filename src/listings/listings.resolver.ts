@@ -46,11 +46,11 @@ export class ListingsResolver {
   }
 
   @Query(() => [ListingType])
-async nearbyListings(
+ async nearbyListings(
   @Args('latitude', { type: () => Float }) latitude: number,
   @Args('longitude', { type: () => Float }) longitude: number,
   @Args('radiusKm', { type: () => Float }) radiusKm: number,
-) {
+ ) {
   const radiusMeters = radiusKm * 1000;
 
   return this.listingsRepository

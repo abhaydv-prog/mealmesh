@@ -2,6 +2,7 @@ import {
   Resolver,
   Query,
   Mutation,
+  Subscription,
   Args,
   ObjectType,
   Field,
@@ -13,6 +14,7 @@ import { Pickup, PickupStatus } from './pickup.entity';
 import { Listing, ListingStatus } from '../listings/listing.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
+import { pubSub } from '../pubsub';
 
 @ObjectType()
 class PickupType {
@@ -22,6 +24,8 @@ class PickupType {
   @Field(() => PickupStatus)
   status!: PickupStatus;
 }
+
+const PICKUP_STATUS_UPDATED = 'pickupStatusUpdated';
 
 @Resolver()
 export class PickupsResolver {
@@ -59,7 +63,13 @@ export class PickupsResolver {
       status: PickupStatus.ASSIGNED,
     });
 
-    return this.pickupsRepository.save(pickup);
+    const saved = await this.pickupsRepository.save(pickup);
+
+    await pubSub.publish(PICKUP_STATUS_UPDATED, {
+      pickupStatusUpdated: saved,
+    });
+
+    return saved;
   }
 
   @Mutation(() => PickupType)
@@ -77,8 +87,17 @@ export class PickupsResolver {
     }
 
     pickup.status = status;
-    await this.pickupsRepository.save(pickup);
+    const saved = await this.pickupsRepository.save(pickup);
 
-    return pickup;
+    await pubSub.publish(PICKUP_STATUS_UPDATED, {
+      pickupStatusUpdated: saved,
+    });
+
+    return saved;
+  }
+
+  @Subscription(() => PickupType)
+  pickupStatusUpdated() {
+    return pubSub.asyncIterableIterator(PICKUP_STATUS_UPDATED);
   }
 }

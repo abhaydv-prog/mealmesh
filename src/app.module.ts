@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { ListingsModule } from './listings/listings.module';
 import { AuthModule } from './auth/auth.module';
 import { PickupsModule } from './pickups/pickups.module';
+import { RatingsModule } from './ratings/ratings.module';
 
 @Module({
   imports: [
@@ -35,13 +36,20 @@ import { PickupsModule } from './pickups/pickups.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       playground: true,
+      subscriptions: {
+        'graphql-ws': true,
+      },
     }),
+   
     UsersModule,
     ListingsModule,
     AuthModule,
     PickupsModule,
+    RatingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {} 
+
+     

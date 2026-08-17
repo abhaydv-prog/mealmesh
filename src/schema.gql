@@ -38,6 +38,7 @@ input LoginInput {
 type Mutation {
   acceptPickup(listingId: String!): PickupType!
   createListing(input: CreateListingInput!): ListingType!
+  createRating(pickupId: String!, ratedUserId: String!, score: Int!): RatingType!
   login(input: LoginInput!): AuthResponse!
   register(input: RegisterInput!): AuthResponse!
   updatePickupStatus(pickupId: String!, status: PickupStatus!): PickupType!
@@ -61,11 +62,20 @@ type Query {
   nearbyListings(latitude: Float!, longitude: Float!, radiusKm: Float!): [ListingType!]!
 }
 
+type RatingType {
+  id: String!
+  score: Int!
+}
+
 input RegisterInput {
   email: String!
   name: String!
   password: String!
   role: UserRole!
+}
+
+type Subscription {
+  pickupStatusUpdated: PickupType!
 }
 
 type UserResponse {
