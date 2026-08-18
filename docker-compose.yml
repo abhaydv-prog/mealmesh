@@ -12,5 +12,21 @@ services:
     volumes:
       - mealmesh_pgdata:/var/lib/postgresql/data
 
+  app:
+    build: .
+    container_name: mealmesh-app
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: mealmesh_user
+      DB_PASSWORD: mealmesh_pass
+      DB_NAME: mealmesh
+      JWT_SECRET: mealmesh_super_secret_key_change_this_later
+    ports:
+      - "3000:3000"
+
 volumes:
   mealmesh_pgdata:
