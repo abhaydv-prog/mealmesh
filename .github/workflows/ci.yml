@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_DB: mealmesh
+          POSTGRES_USER: mealmesh_user
+          POSTGRES_PASSWORD: mealmesh_pass
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Run lint
+        run: npm run lint
+
+      - name: Build application
+        run: npm run build
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5433
+          DB_USERNAME: mealmesh_user
+          DB_PASSWORD: mealmesh_pass
+          DB_NAME: mealmesh
+          JWT_SECRET: ci_test_secret
+
+      - name: Build Docker image
+        run: docker build -t mealmesh-app .
